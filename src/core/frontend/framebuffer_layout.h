@@ -65,6 +65,18 @@ FramebufferLayout LargeFrameLayout(unsigned width, unsigned height, bool is_swap
 FramebufferLayout SideFrameLayout(unsigned width, unsigned height, bool is_swapped);
 
 /**
+ * Factory method for constructing a Frame with the Top screen and bottom
+ * screen side by side
+ * This is useful because it gives the impression that the entire screen is filled with game
+ * displays.
+ * @param width Window framebuffer width in pixels
+ * @param height Window framebuffer height in pixels
+ * @param is_swapped if true, the left screen will copy the bottom screen instead of the top screen
+ * @return Newly created FramebufferLayout object with default screen regions initialized
+ */
+FramebufferLayout HybridFrameLayout(unsigned width, unsigned height, bool is_swapped);
+
+/**
  * Factory method for constructing a custom FramebufferLayout
  * @param width Window framebuffer width in pixels
  * @param height Window framebuffer height in pixels

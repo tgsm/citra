@@ -174,6 +174,17 @@ FramebufferLayout SideFrameLayout(unsigned width, unsigned height, bool swapped)
     return res;
 }
 
+FramebufferLayout HybridFrameLayout(unsigned width, unsigned height, bool swapped) {
+    ASSERT(width > 0);
+    ASSERT(height > 0);
+
+    FramebufferLayout res{width, height, true, true, {}, {}};
+
+    // TODO: actually implement the layout
+
+    return res;
+}
+
 FramebufferLayout CustomFrameLayout(unsigned width, unsigned height) {
     ASSERT(width > 0);
     ASSERT(height > 0);

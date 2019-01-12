@@ -252,6 +252,7 @@ void GMainWindow::InitializeWidgets() {
     actionGroup_ScreenLayouts->addAction(ui.action_Screen_Layout_Single_Screen);
     actionGroup_ScreenLayouts->addAction(ui.action_Screen_Layout_Large_Screen);
     actionGroup_ScreenLayouts->addAction(ui.action_Screen_Layout_Side_by_Side);
+    actionGroup_ScreenLayouts->addAction(ui.action_Screen_Layout_Hybrid_Screen);
 }
 
 void GMainWindow::InitializeDebugWidgets() {
@@ -569,6 +570,8 @@ void GMainWindow::ConnectMenuEvents() {
     connect(ui.action_Screen_Layout_Large_Screen, &QAction::triggered, this,
             &GMainWindow::ChangeScreenLayout);
     connect(ui.action_Screen_Layout_Side_by_Side, &QAction::triggered, this,
+            &GMainWindow::ChangeScreenLayout);
+    connect(ui.action_Screen_Layout_Hybrid_Screen, &QAction::triggered, this,
             &GMainWindow::ChangeScreenLayout);
     connect(ui.action_Screen_Layout_Swap_Screens, &QAction::triggered, this,
             &GMainWindow::OnSwapScreens);
@@ -1276,6 +1279,8 @@ void GMainWindow::ChangeScreenLayout() {
         new_layout = Settings::LayoutOption::LargeScreen;
     } else if (ui.action_Screen_Layout_Side_by_Side->isChecked()) {
         new_layout = Settings::LayoutOption::SideScreen;
+    } else if (ui.action_Screen_Layout_Hybrid_Screen->isChecked()) {
+        new_layout = Settings::LayoutOption::HybridScreen;
     }
 
     Settings::values.layout_option = new_layout;
@@ -1296,6 +1301,9 @@ void GMainWindow::ToggleScreenLayout() {
         new_layout = Settings::LayoutOption::SideScreen;
         break;
     case Settings::LayoutOption::SideScreen:
+        new_layout = Settings::LayoutOption::HybridScreen;
+        break;
+    case Settings::LayoutOption::HybridScreen:
         new_layout = Settings::LayoutOption::Default;
         break;
     }
@@ -1819,6 +1827,8 @@ void GMainWindow::SyncMenuUISettings() {
                                                      Settings::LayoutOption::LargeScreen);
     ui.action_Screen_Layout_Side_by_Side->setChecked(Settings::values.layout_option ==
                                                      Settings::LayoutOption::SideScreen);
+    ui.action_Screen_Layout_Hybrid_Screen->setChecked(Settings::values.layout_option ==
+                                                      Settings::LayoutOption::HybridScreen);
     ui.action_Screen_Layout_Swap_Screens->setChecked(Settings::values.swap_screen);
 }
 
