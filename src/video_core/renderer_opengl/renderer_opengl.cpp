@@ -427,6 +427,7 @@ void RendererOpenGL::DrawScreens(const Layout::FramebufferLayout& layout) {
 
     const auto& top_screen = layout.top_screen;
     const auto& bottom_screen = layout.bottom_screen;
+    const auto& copied_screen = layout.copied_screen;
 
     glViewport(0, 0, layout.width, layout.height);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -467,6 +468,21 @@ void RendererOpenGL::DrawScreens(const Layout::FramebufferLayout& layout) {
                                     ((float)bottom_screen.left / 2) + ((float)layout.width / 2),
                                     (float)bottom_screen.top, (float)bottom_screen.GetWidth() / 2,
                                     (float)bottom_screen.GetHeight());
+        }
+    }
+    if (layout.copied_screen_enabled) {
+        if (!Settings::values.toggle_3d) {
+            DrawSingleScreenRotated(screen_infos[0], (float)copied_screen.left,
+                                    (float)copied_screen.top, (float)copied_screen.GetWidth(),
+                                    (float)copied_screen.GetHeight());
+        } else {
+            DrawSingleScreenRotated(screen_infos[0], (float)copied_screen.left / 2,
+                                    (float)copied_screen.top, (float)copied_screen.GetWidth() / 2,
+                                    (float)copied_screen.GetHeight());
+            DrawSingleScreenRotated(screen_infos[0],
+                                    ((float)copied_screen.left / 2) + ((float)layout.width / 2),
+                                    (float)copied_screen.top, (float)copied_screen.GetWidth() / 2,
+                                    (float)copied_screen.GetHeight());
         }
     }
 

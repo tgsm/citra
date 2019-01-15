@@ -34,7 +34,7 @@ FramebufferLayout DefaultFrameLayout(unsigned width, unsigned height, bool swapp
     ASSERT(width > 0);
     ASSERT(height > 0);
 
-    FramebufferLayout res{width, height, true, true, {}, {}};
+    FramebufferLayout res{width, height, true, true, false, {}, {}, {}};
     // Default layout gives equal screen sizes to the top and bottom screen
     MathUtil::Rectangle<unsigned> screen_window_area{0, 0, width, height / 2};
     MathUtil::Rectangle<unsigned> top_screen =
@@ -75,7 +75,7 @@ FramebufferLayout SingleFrameLayout(unsigned width, unsigned height, bool swappe
     ASSERT(height > 0);
     // The drawing code needs at least somewhat valid values for both screens
     // so just calculate them both even if the other isn't showing.
-    FramebufferLayout res{width, height, !swapped, swapped, {}, {}};
+    FramebufferLayout res{width, height, !swapped, swapped, false, {}, {}, {}};
 
     MathUtil::Rectangle<unsigned> screen_window_area{0, 0, width, height};
     MathUtil::Rectangle<unsigned> top_screen =
@@ -104,7 +104,7 @@ FramebufferLayout LargeFrameLayout(unsigned width, unsigned height, bool swapped
     ASSERT(width > 0);
     ASSERT(height > 0);
 
-    FramebufferLayout res{width, height, true, true, {}, {}};
+    FramebufferLayout res{width, height, true, true, false, {}, {}, {}};
     // Split the window into two parts. Give 4x width to the main screen and 1x width to the small
     // To do that, find the total emulation box and maximize that based on window size
     float window_aspect_ratio = static_cast<float>(height) / width;
@@ -144,7 +144,7 @@ FramebufferLayout SideFrameLayout(unsigned width, unsigned height, bool swapped)
     ASSERT(width > 0);
     ASSERT(height > 0);
 
-    FramebufferLayout res{width, height, true, true, {}, {}};
+    FramebufferLayout res{width, height, true, true, false, {}, {}, {}};
     // Aspect ratio of both screens side by side
     const float emulation_aspect_ratio = static_cast<float>(Core::kScreenTopHeight) /
                                          (Core::kScreenTopWidth + Core::kScreenBottomWidth);
@@ -178,10 +178,44 @@ FramebufferLayout HybridFrameLayout(unsigned width, unsigned height, bool swappe
     ASSERT(width > 0);
     ASSERT(height > 0);
 
-    FramebufferLayout res{width, height, true, true, {}, {}};
+    FramebufferLayout res{width, height, true, true, true, {}, {}, {}};
 
-    // TODO: actually implement the layout
+    // FIXME: hardcoded - I don't really know how to fix this
+    float emulation_aspect_ratio = 798.0f / 1920.0f;
 
+    float window_aspect_ratio = static_cast<float>(height) / width;
+
+    MathUtil::Rectangle<unsigned> screen_window_area{0, 0, width, height};
+    MathUtil::Rectangle<unsigned> total_rect =
+        maxRectangle(screen_window_area, emulation_aspect_ratio);
+    MathUtil::Rectangle<unsigned> top_screen = maxRectangle(total_rect, TOP_SCREEN_ASPECT_RATIO);
+    MathUtil::Rectangle<unsigned> bot_screen = maxRectangle(total_rect, BOT_SCREEN_ASPECT_RATIO);
+    MathUtil::Rectangle<unsigned> copied_screen = maxRectangle(total_rect, TOP_SCREEN_ASPECT_RATIO);
+
+    // FIXME: hardcoded values
+    top_screen = top_screen.Scale(0.4438f);
+    bot_screen = bot_screen.Scale(0.555f);
+
+    top_screen = top_screen.TranslateX(total_rect.right - top_screen.GetWidth());
+    bot_screen = bot_screen.TranslateX(total_rect.right - bot_screen.GetWidth());
+
+    bot_screen = bot_screen.TranslateY(total_rect.bottom - bot_screen.GetHeight());
+
+    if (window_aspect_ratio < emulation_aspect_ratio) {
+        u32 shift_horizontal = (screen_window_area.GetWidth() - total_rect.GetWidth()) / 2;
+        top_screen = top_screen.TranslateX(shift_horizontal);
+        bot_screen = bot_screen.TranslateX(shift_horizontal);
+        copied_screen = copied_screen.TranslateX(shift_horizontal);
+    } else {
+        u32 shift_vertical = (screen_window_area.GetHeight() - total_rect.GetHeight()) / 2;
+        top_screen = top_screen.TranslateY(shift_vertical);
+        bot_screen = bot_screen.TranslateY(shift_vertical);
+        copied_screen = copied_screen.TranslateY(shift_vertical);
+    }
+
+    res.top_screen = top_screen;
+    res.bottom_screen = bot_screen;
+    res.copied_screen = copied_screen;
     return res;
 }
 
@@ -189,7 +223,7 @@ FramebufferLayout CustomFrameLayout(unsigned width, unsigned height) {
     ASSERT(width > 0);
     ASSERT(height > 0);
 
-    FramebufferLayout res{width, height, true, true, {}, {}};
+    FramebufferLayout res{width, height, true, true, false, {}, {}, {}};
 
     MathUtil::Rectangle<unsigned> top_screen{
         Settings::values.custom_top_left, Settings::values.custom_top_top,
