@@ -36,6 +36,7 @@
 #include "core/hle/service/ldr_ro/ldr_ro.h"
 #include "core/hle/service/mcu/mcu.h"
 #include "core/hle/service/mic_u.h"
+#include "core/hle/service/mp/mp_u.h"
 #include "core/hle/service/mvd/mvd.h"
 #include "core/hle/service/ndm/ndm_u.h"
 #include "core/hle/service/news/news.h"
@@ -83,6 +84,7 @@ const std::array<ServiceModuleInfo, 40> service_module_map{
      {"IR", 0x00040130'00003302, IR::InstallInterfaces},
      {"MCU", 0x00040130'00001F02, MCU::InstallInterfaces},
      {"MIC", 0x00040130'00002002, MIC::InstallInterfaces},
+     {"MP", 0x00040130'00002A02, MP::InstallInterfaces},
      {"MVD", 0x00040130'20004102, MVD::InstallInterfaces},
      {"NDM", 0x00040130'00002B02, NDM::InstallInterfaces},
      {"NEWS", 0x00040130'00003502, NEWS::InstallInterfaces},
@@ -105,7 +107,6 @@ const std::array<ServiceModuleInfo, 40> service_module_map{
      {"CDC", 0x00040130'00001802, nullptr},
      {"GPIO", 0x00040130'00001B02, nullptr},
      {"I2C", 0x00040130'00001E02, nullptr},
-     {"MP", 0x00040130'00002A02, nullptr},
      {"PDN", 0x00040130'00002102, nullptr},
      {"SPI", 0x00040130'00002302, nullptr}}};
 

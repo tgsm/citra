@@ -298,6 +298,8 @@ add_library(core STATIC
     hle/service/mcu/mcu_hwc.h
     hle/service/mic_u.cpp
     hle/service/mic_u.h
+    hle/service/mp/mp_u.cpp
+    hle/service/mp/mp_u.h
     hle/service/mvd/mvd.cpp
     hle/service/mvd/mvd.h
     hle/service/mvd/mvd_std.cpp
