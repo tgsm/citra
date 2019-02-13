@@ -94,6 +94,7 @@ const std::array<ServiceModuleInfo, 40> service_module_map{
           APT::InstallInterfaces(system);
       }},
      {"NWM", 0x00040130'00002D02, NWM::InstallInterfaces},
+     {"PS", 0x00040130'00003102, PS::InstallInterfaces},
      {"PTM", 0x00040130'00002202, PTM::InstallInterfaces},
      {"QTM", 0x00040130'00004202, QTM::InstallInterfaces},
      {"CSND", 0x00040130'00002702, CSND::InstallInterfaces},
@@ -106,7 +107,6 @@ const std::array<ServiceModuleInfo, 40> service_module_map{
      {"I2C", 0x00040130'00001E02, nullptr},
      {"MP", 0x00040130'00002A02, nullptr},
      {"PDN", 0x00040130'00002102, nullptr},
-     {"PS", 0x00040130'00003102, nullptr},
      {"SPI", 0x00040130'00002302, nullptr}}};
 
 /**
