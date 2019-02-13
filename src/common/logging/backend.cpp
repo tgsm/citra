@@ -178,6 +178,7 @@ void DebuggerBackend::Write(const Entry& entry) {
     SUB(Service, AM)                                                                               \
     SUB(Service, PTM)                                                                              \
     SUB(Service, LDR)                                                                              \
+    SUB(Service, MCU)                                                                              \
     SUB(Service, MIC)                                                                              \
     SUB(Service, NDM)                                                                              \
     SUB(Service, NFC)                                                                              \
