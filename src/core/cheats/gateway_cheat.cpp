@@ -170,6 +170,38 @@ static inline void PatchOp(const GatewayCheat::CheatLine& line, State& state, Co
     }
 }
 
+static inline void ArithmeticMultiplyOp(const GatewayCheat::CheatLine& line, State& state) {
+    state.reg *= line.value;
+}
+
+static inline void ArithmeticDivideOp(const GatewayCheat::CheatLine& line, State& state) {
+    state.reg /= line.value;
+}
+
+static inline void ArithmeticAndOp(const GatewayCheat::CheatLine& line, State& state) {
+    state.reg &= line.value;
+}
+
+static inline void ArithmeticOrOp(const GatewayCheat::CheatLine& line, State& state) {
+    state.reg |= line.value;
+}
+
+static inline void ArithmeticXorOp(const GatewayCheat::CheatLine& line, State& state) {
+    state.reg ^= line.value;
+}
+
+static inline void ArithmeticNotOp(const GatewayCheat::CheatLine& line, State& state) {
+    state.reg = ~state.reg;
+}
+
+static inline void ArithmeticLeftShiftOp(const GatewayCheat::CheatLine& line, State& state) {
+    state.reg <<= line.value;
+}
+
+static inline void ArithmeticRightShiftOp(const GatewayCheat::CheatLine& line, State& state) {
+    state.reg >>= line.value;
+}
+
 GatewayCheat::CheatLine::CheatLine(const std::string& line) {
     constexpr std::size_t cheat_length = 17;
     if (line.length() != cheat_length) {
@@ -181,10 +213,13 @@ GatewayCheat::CheatLine::CheatLine(const std::string& line) {
     }
     try {
         std::string type_temp = line.substr(0, 1);
-        // 0xD types have extra subtype value, i.e. 0xDA
+        // 0xD and 0xF types have extra subtype value, i.e. 0xDA, 0xF1
         std::string sub_type_temp;
-        if (type_temp == "D" || type_temp == "d")
+        if (type_temp == "D" || type_temp == "d") {
             sub_type_temp = line.substr(1, 1);
+        } else if (type_temp == "F" || type_temp == "f") {
+            sub_type_temp = line.substr(1, 1);
+        }
         type = static_cast<CheatType>(std::stoi(type_temp + sub_type_temp, 0, 16));
         first = std::stoul(line.substr(0, 8), 0, 16);
         address = first & 0x0FFFFFFF;
@@ -410,6 +445,59 @@ void GatewayCheat::Execute(Core::System& system) const {
             PatchOp(line, state, system, cheat_lines);
             break;
         }
+        case CheatType::ArithmeticMultiply:
+            // F4000000 YYYYYYYY - MUL - data *= YYYYYYYY
+            ArithmeticMultiplyOp(line, state);
+            break;
+        case CheatType::ArithmeticDivide:
+            // F5000000 YYYYYYYY - DIV - data /= YYYYYYYY
+            ArithmeticDivideOp(line, state);
+            break;
+        case CheatType::ArithmeticAnd:
+            // F6000000 YYYYYYYY - AND - data &= YYYYYYYY
+            ArithmeticAndOp(line, state);
+            break;
+        case CheatType::ArithmeticOr:
+            // F7000000 YYYYYYYY - OR - data |= YYYYYYYY
+            ArithmeticOrOp(line, state);
+            break;
+        case CheatType::ArithmeticXor:
+            // F8000000 YYYYYYYY - XOR - data ^= YYYYYYYY
+            ArithmeticXorOp(line, state);
+            break;
+        case CheatType::ArithmeticNot:
+            // F9000000 00000000 - NOT - data = ~data
+            ArithmeticNotOp(line, state);
+            break;
+        case CheatType::ArithmeticLeftShift:
+            // FA000000 YYYYYYYY - Left shift - data <<= YYYYYYYY
+            ArithmeticLeftShiftOp(line, state);
+            break;
+        case CheatType::ArithmeticRightShift:
+            // FB000000 YYYYYYYY - Right shift - data >>= YYYYYYYY
+            ArithmeticRightShiftOp(line, state);
+            break;
+        case CheatType::SetFloatModeEnablement:
+            // F0000001 00000000 - Disables float mode for F1, F2, F3 codes
+            // F0000001 00000001 - Enables float mode for F1, F2, F3 codes
+            // TODO(tgsm): implement
+            // fallthrough
+        case CheatType::ArithmeticOffsetAdd:
+            // F1XXXXXX YYYYYYYY - *(XXXXXX + offset) += YYYYYYYY
+            // TODO(tgsm): implement
+            // fallthrough
+        case CheatType::ArithmeticOffsetMultiply:
+            // F2XXXXXX YYYYYYYY - *(XXXXXX + offset) *= YYYYYYYY
+            // TODO(tgsm): implement
+            // fallthrough
+        case CheatType::ArithmeticOffsetDivide:
+            // F3XXXXXX YYYYYYYY - *(XXXXXX + offset) /= YYYYYYYY
+            // TODO(tgsm): implement
+            // fallthrough
+        default:
+            LOG_ERROR(Core_Cheats, "Unknown/unimplemented cheat type: 0x{:X} (cheat line: {})",
+                      static_cast<u32>(line.type), line.cheat_line);
+            break;
         }
     }
 }

@@ -41,6 +41,22 @@ public:
         AddOffset = 0xDC,
         Joker = 0xDD,
         Patch = 0xE,
+        SetFloatModeEnablement = 0xF0,
+        ArithmeticOffsetAdd = 0xF1,
+        ArithmeticOffsetMultiply = 0xF2,
+        ArithmeticOffsetDivide = 0xF3,
+        ArithmeticMultiply = 0xF4,
+        ArithmeticDivide = 0xF5,
+        ArithmeticAnd = 0xF6,
+        ArithmeticOr = 0xF7,
+        ArithmeticXor = 0xF8,
+        ArithmeticNot = 0xF9,
+        ArithmeticLeftShift = 0xFA,
+        ArithmeticRightShift = 0xFB,
+        DataCopy = 0xFC,
+        DataSearch = 0xFE,
+        RandomGenerator = 0xFF,
+        CustomASMRoutine = 0xF0F0,
     };
 
     struct CheatLine {
